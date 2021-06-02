@@ -1,1 +1,1 @@
-# music_helps
+Helper scripts for managing music studies and practice routines.
