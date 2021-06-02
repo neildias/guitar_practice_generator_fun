@@ -17,19 +17,19 @@ topics = {
     "Vibrato": 0,
     "Slide": 0,
     "Bends": 0,
-    # "Improvisation": 0,
-    # "Song Practice": 0,
-    # "Flamenco RH": 0,
-    # "Flamenco LH": 0,
-    # "Tremelo": 0,
-    # "Sweep Picking": 0,
-    # "Hybrid Picking": 0,
-    # "Tapping": 0,
-    # "Natural Harmonics": 0,
-    # "Artificial Harmonics": 0,
-    # "Percussive": 0,
-    # "Whammy bar" : 0,
-    # "Pedals" : 0,
+    "Improvisation": 0,
+    "Song Practice": 0,
+    "Flamenco RH": 0,
+    "Flamenco LH": 0,
+    "Tremelo": 0,
+    "Sweep Picking": 0,
+    "Hybrid Picking": 0,
+    "Tapping": 0,
+    "Natural Harmonics": 0,
+    "Artificial Harmonics": 0,
+    "Percussive": 0,
+    "Whammy bar" : 0,
+    "Pedals" : 0,
   }
 
 
@@ -101,10 +101,14 @@ def get_data_points(data_dict: dict):
   """
 
   updates_to_add = dict()
+  towards_total_minutes = 0
 
   for key in data_dict.keys():
     value = get_minutes(key)
     updates_to_add[key] = value
+    towards_total_minutes += value
+
+  updates_to_add["Total Mins"] = towards_total_minutes
 
   return updates_to_add
 
