@@ -120,4 +120,4 @@ df = df.append(pd.Series(updates,
 print(df.T)
 
 # export df as excel doc with the same file name
-df.to_excel(path + filename, index=True)
+df.fillna(0).to_excel(path + filename, index=True)
