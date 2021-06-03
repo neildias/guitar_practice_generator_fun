@@ -1,6 +1,6 @@
 from numpy import random
 from gtts import gTTS
-import os, time, sys
+import os, time
 
 musical_notes = "Ah B C D E F G".split()   # Ah instead of A to help gTTS pronounce
 print(musical_notes,"\n","="*35, "\n")     # aesthetics
@@ -66,7 +66,8 @@ def find_tonic_on(random_tonic: bool = False,
                   how_many_notes: int = 1):
   """
   Use case with random_tonic == FAlSE:
-  Spells out random name(s) of the string on which a note of users choice is to be played
+  Spells out random name(s) of the string on which a note of users choice is to
+  be played
 
   Use case with random_tonic == TRUE:
   Spells out random name(s) of the strings along with random names of note(s).

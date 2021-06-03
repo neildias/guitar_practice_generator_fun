@@ -6,17 +6,22 @@ import os
 
 def get_file_path(path: str, filename: str, data_dict: dict):
   """
-  Lets user change file path, filename and add more topic headers to the practice routine
+  Lets user change file path, filename and add more topic headers to the
+  practice routine
 
   :param path: str
   :param filename: str
   :param data_dict: dict
-  :return: None if no change opted else returns filepath, filename, modified_data_dict
+  :return: None if no change opted else returns filepath, filename,
+           modified_data_dict
   """
   # change directory
-  change_directory = input(f"Do you want to change the current file path: {path}, or the current file_name: '{filename}'.\n"
-                           f"Or add to the current topics/heads of practice: ? "
-                           f"Enter 'y' if you want to change that, else press ENTER. ")
+  change_directory = input(
+    f"Do you want to change the current file path: {path}, "
+    f"or the current file_name: '{filename}'.\n"
+    f"Or add to the current topics/heads of practice: ? "
+    f"Enter 'y' if you want to change that, else press ENTER. "
+  )
   if change_directory == 'y':
     invalid_directory = True
     while invalid_directory:
@@ -47,13 +52,19 @@ def get_file_path(path: str, filename: str, data_dict: dict):
     invalid_topic_head = True
     print("The current heads of practice are as follows: ")
     pprint([key for key in data_dict.keys()])
-    change_topic_headers = input("Press y to opt to change the topic headers, else type ENTER ")
+    change_topic_headers = input(
+      "Press y to opt to change the topic headers, else type ENTER "
+    )
     if change_topic_headers == "y":
-      new_topic_headers = input("Type the name of new topic heads separated by space, then enter : ")
+      new_topic_headers = input(
+        "Type the name of new topic heads separated by space, then enter : "
+      )
       for topic_head in new_topic_headers.split():
         # topic head sanity check
         while not topic_head.isalpha():
-          topic_head = input(f"Previous entry {topic_head} must be all alphabets. Try again: ")
+          topic_head = input(
+            f"Previous entry {topic_head} must be all alphabets. Try again: "
+          )
         data_dict[topic_head] = 0
     return file_directory, file_name, data_dict
 
@@ -95,14 +106,18 @@ def get_date():
   """
 
   while True:
-    custom_date = input("If the entry is for a custom date, enter after typing date in dd-mm-yyyy; else press ENTER : ")
+    custom_date = input(
+      "If the entry is for a custom date, enter after typing date in dd-mm-yyyy;"
+      " else press ENTER : "
+    )
     if not custom_date:
       return date.today()
     else:
       try:
         return pd.to_datetime(custom_date, format="%d-%m-%Y")
       except:
-        print("Wrong Input!!! Either press plain enter key, or provide date in dd-mm-yyyy format. Try again!")
+        print("Wrong Input!!! Either press plain enter key, or provide date in "
+              "dd-mm-yyyy format. Try again!")
 
 
 # get values to be inputted in the dataframe
@@ -118,11 +133,12 @@ def get_minutes(key: str):
   while bad_input:
     try:
       value = int(input(f"Type minutes spend on {key} today : "))
-      if value < 60 * 8:                                 # less than 8 hours of practice
+      if value < 60 * 8:                       # less than 8 hours of practice
         bad_input = False
         print()
       else:
-        print("Bad input received. Input a (whole) number less than 480... Try again!!!")
+        print("Bad input received. Input a (whole) number less than 480... "
+              "Try again!!!")
 
     except ValueError as e:
       # print(e)
