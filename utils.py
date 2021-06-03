@@ -4,8 +4,15 @@ from pprint import pprint
 import os
 
 
-def get_file_path(path, filename, data_dict):
+def get_file_path(path: str, filename: str, data_dict: dict):
+  """
+  Lets user change file path, filename and add more topic headers to the practice routine
 
+  :param path: str
+  :param filename: str
+  :param data_dict: dict
+  :return: None if no change opted else returns filepath, filename, modified_data_dict
+  """
   # change directory
   change_directory = input(f"Do you want to change the current file path: {path}, or the current file_name: '{filename}'.\n"
                            f"Or add to the current topics/heads of practice: ? "
@@ -54,7 +61,15 @@ def get_file_path(path, filename, data_dict):
     return None, None, None
 
 
-def read_create_database_object(path, filename, data_dict):
+def read_create_database_object(path: str, filename: str, data_dict: dict):
+  """
+  Returns a dataframe based on existing files or by creating a new one
+
+  :param path: str
+  :param filename: str
+  :param data_dict: dict
+  :return: df
+  """
   try:
     # check if an excel file is available
     df = pd.read_excel(path + filename, index_col=0)
@@ -75,7 +90,8 @@ def read_create_database_object(path, filename, data_dict):
 def get_date():
   """
   Retrieve custom or current date in the appropriate format
-  :return: None
+
+  :return: python or pandas date object. Later if user inputs a date
   """
 
   while True:
@@ -116,6 +132,7 @@ def get_minutes(key: str):
 
 def get_data_points(data_dict: dict):
   """
+  Returns a dictionary of updated values for each header
 
   :param data_dict: dict | dictionary of topics and values
   :return: dict | updates in dictionary dtype
