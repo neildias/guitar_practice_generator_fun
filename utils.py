@@ -15,6 +15,9 @@ def get_file_path(path: str, filename: str, data_dict: dict):
   :return: None if no change opted else returns filepath, filename,
            modified_data_dict
   """
+  # instantiate new variables
+  file_directory = file_name = ""
+
   # change directory
   change_directory = input(
     f"Do you want to change the current file path: {path}, "
@@ -29,7 +32,7 @@ def get_file_path(path: str, filename: str, data_dict: dict):
       # if opted not to change
       if not file_directory:
         invalid_directory = False
-      else: # if directory inputted test if its a valid file path
+      else:  # if directory inputted test if its a valid file path
         if os.path.exists(file_directory):
           invalid_directory = False
         else:
@@ -42,14 +45,13 @@ def get_file_path(path: str, filename: str, data_dict: dict):
       # if opted not to change
       if not file_name:
         invalid_filename = False
-      else: # check if inputted filename is valid
+      else:  # check if inputted filename is valid
         if file_name.isalnum():
           invalid_filename = False
         else:
           print("The file name is invalid. Enter again.")
 
     # alter topic headers
-    invalid_topic_head = True
     print("The current heads of practice are as follows: ")
     pprint([key for key in data_dict.keys()])
     change_topic_headers = input(
@@ -86,18 +88,19 @@ def read_create_database_object(path: str, filename: str, data_dict: dict):
     df = pd.read_excel(path + filename, index_col=0)
     print("Found existing database")
 
-  except FileNotFoundError as e:
-    # if unavailable create a dataframe, to be later exported as exce;
-    # print(e)
+  except FileNotFoundError:
+    # if unavailable create a dataframe, to be later exported as excel;
     print("Existing database not found. Creating a new database (dataframe)\n")
 
     df = pd.DataFrame(data_dict,
-                      index=pd.date_range(start="06-03-2021", periods=1, freq="D"))
+                      index=pd.date_range(start="06-03-2021",
+                                          periods=1,
+                                          freq="D"))
 
   return df
 
 
-# get date for the index column of the dateframe for the new inputs
+# get date for the index column of the dataframe for the new inputs
 def get_date():
   """
   Retrieve custom or current date in the appropriate format
@@ -107,7 +110,7 @@ def get_date():
 
   while True:
     custom_date = input(
-      "If the entry is for a custom date, enter after typing date in dd-mm-yyyy;"
+      "To input a custom date, enter the same in dd-mm-yyyy;"
       " else press ENTER : "
     )
     if not custom_date:
@@ -115,7 +118,7 @@ def get_date():
     else:
       try:
         return pd.to_datetime(custom_date, format="%d-%m-%Y")
-      except:
+      except ValueError:
         print("Wrong Input!!! Either press plain enter key, or provide date in "
               "dd-mm-yyyy format. Try again!")
 
@@ -128,8 +131,9 @@ def get_minutes(key: str):
   :param : str | key in a dict
   :return: int | minutes
   """
-
+  value = ""
   bad_input = True
+
   while bad_input:
     try:
       value = int(input(f"Type minutes spend on {key} today : "))
@@ -140,8 +144,7 @@ def get_minutes(key: str):
         print("Bad input received. Input a (whole) number less than 480... "
               "Try again!!!")
 
-    except ValueError as e:
-      # print(e)
+    except ValueError:
       print("Minutes entered must be a whole number. Try again!!!")
   return value
 
@@ -151,7 +154,7 @@ def get_data_points(data_dict: dict):
   Returns a dictionary of updated values for each header
 
   :param data_dict: dict | dictionary of topics and values
-  :return: dict | updates in dictionary dtype
+  :return: dict | updates in dictionary data type
   """
 
   updates_to_add = dict()

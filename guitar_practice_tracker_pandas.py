@@ -1,5 +1,6 @@
 import pandas as pd
-from utils import get_date, get_file_path, get_data_points, read_create_database_object
+from utils import (get_date, get_file_path, get_data_points,
+                   read_create_database_object)
 
 
 # hardcoded topic heads
@@ -42,8 +43,8 @@ topics = {
     "Harp Harmonics": 0,
     "Slap Harmonics:": 0,
     "Percussive": 0,
-    "Whammy bar" : 0,
-    "Pedals" : 0,
+    "Whammy bar": 0,
+    "Pedals": 0,
   }
 
 # hardcoded path
@@ -56,7 +57,6 @@ new_path, new_filename, new_topic_dict = get_file_path(path, filename, topics)
 path = new_path if new_path else path
 filename = new_filename if new_filename else filename
 topics = new_topic_dict if new_topic_dict else topics
-
 
 # get data
 df = read_create_database_object(path, filename, topics)

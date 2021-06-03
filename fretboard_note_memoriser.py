@@ -1,9 +1,10 @@
 from numpy import random
 from gtts import gTTS
-import os, time
+import os
+import time
 
-musical_notes = "Ah B C D E F G".split()   # Ah instead of A to help gTTS pronounce
-print(musical_notes,"\n","="*35, "\n")     # aesthetics
+musical_notes = "Ah B C D E F G".split()  # Ah not A; help gTTS pronounce
+print(musical_notes, "\n", "="*35, "\n")    # aesthetics
 
 
 def multiple_strings_names_to_text(counter: int):
@@ -44,8 +45,8 @@ def to_speech(voice_this: str):
 
 def random_notes(iterations: int = 100, time_gap: float = 1.):
   """
-  Prints random musical notes in space of the time_gap mentioned for the iteration
-  asked.
+  Prints random musical notes in space of the time_gap mentioned for the
+  iteration asked.
 
   :param iterations: int
   :param time_gap: float
@@ -77,7 +78,7 @@ def find_tonic_on(random_tonic: bool = False,
 
   :param random_tonic: bool
   :param iterations: int | how many times to spell out random notes/strings
-  :param how_many_strings: int | how many random string names to speell out
+  :param how_many_strings: int | how many random string names to spell out
   :param time_gap: float | time in seconds
   :param how_many_notes: float | random notes to be generated
   :return: None
@@ -87,7 +88,7 @@ def find_tonic_on(random_tonic: bool = False,
 
     if random_tonic:
       # choose and print random notes
-      random_notes(how_many_notes,3)
+      random_notes(how_many_notes, 3)
 
     # choose random strings
     strings_to_speech = multiple_strings_names_to_text(how_many_strings)
