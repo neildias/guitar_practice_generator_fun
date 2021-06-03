@@ -1,14 +1,13 @@
 import pandas as pd
-from datetime import date
+from utils import get_date, get_file_path, get_data_points, read_create_database_object
 
 
-path = "P:\\"
-filename = "guitar_practice_tracker.xlsx"
-
+# hardcoded topic heads
 topics = {
     "Music_Theory": 0,
     "Sight Reading": 0,
     "Ear Training": 0,
+    "Sight Playing (Classical)": 0,
     "FretBoard Mastery": 0,
     "Work on Scales": 0,
     "Work on Chords": 0,
@@ -17,7 +16,20 @@ topics = {
     "Vibrato": 0,
     "Slide": 0,
     "Bends": 0,
+    "Picado": 0,
+    "Rasgeo": 0,
+    "Pulgar": 0,
+    "Alzapua": 0,
+    "Golpe": 0,
+    "Solea": 0,
+    "Alegrias": 0,
+    "Tangos": 0,
+    "Seguiriya": 0,
+    "Tarantas": 0,
+    "Granainas": 0,
+    "Bulerias": 0,
     "Improvisation": 0,
+    "Guitar Licks": 0,
     "Song Practice": 0,
     "Flamenco RH": 0,
     "Flamenco LH": 0,
@@ -27,91 +39,30 @@ topics = {
     "Tapping": 0,
     "Natural Harmonics": 0,
     "Artificial Harmonics": 0,
+    "Harp Harmonics": 0,
+    "Slap Harmonics:": 0,
     "Percussive": 0,
     "Whammy bar" : 0,
     "Pedals" : 0,
   }
 
+# hardcoded path
+path = "P:\\"
+filename = "guitar_practice_tracker.xlsx"
 
-try:
-  # check if an excel file is available
-  df = pd.read_excel(path + filename, index_col=0)
-  print("Found existing database")
+# get new_path, filename if the user chooses
+new_path, new_filename, new_topic_dict = get_file_path(path, filename, topics)
 
-except Exception as e:
-  # if unavailable create a dataframe, to be later exported as exce;
-  print(e)
-  print("Existing database not found. Creating a new database (dataframe)\n")
-
-  df = pd.DataFrame(topics,
-                    index=pd.date_range(start="06-03-2021", periods=1, freq="D"))
+path = new_path if new_path else path
+filename = new_filename if new_filename else filename
+topics = new_topic_dict if new_topic_dict else topics
 
 
-# get date for the index column of the dateframe for the new inputs
-def get_date():
-  """
-  Retrieve custom or current date in the appropriate format
-  :return: None
-  """
-
-  while True:
-    custom_date = input("If the entry is for a custom date, enter after typing date in dd-mm-yyyy; else press ENTER : ")
-    if not custom_date:
-      return date.today()
-    else:
-      try:
-        return pd.to_datetime(custom_date, format="%d-%m-%Y")
-      except:
-        print("Wrong Input!!! Either press plain enter key, or provide date in dd-mm-yyyy format. Try again!")
-
+# get data
+df = read_create_database_object(path, filename, topics)
 
 # store date in the update_date variable
 update_date = get_date()
-
-# get values to be inputted in the dataframe
-def get_minutes(key: str):
-  """
-  get, authenticate and return input value in minutes
-
-  :param : str | key in a dict
-  :return: int | minutes
-  """
-
-  bad_input = True
-  while bad_input:
-    try:
-      value = int(input(f"Type minutes spend on {key} today : "))
-      if isinstance(value, int) and value < 60 * 8:  # less than 8 hours of practice
-        bad_input = False
-        print()
-      else:
-        print("Bad input received. Input a (whole) number less than 480... Try again!!!")
-
-    except ValueError as e:
-      # print(e)
-      print("Minutes entered must be a whole number. Try again!!!")
-  return value
-
-
-def get_data_points(data_dict: dict):
-  """
-
-  :param data_dict: dict | dictionary of topics and values
-  :return: dict | updates in dictionary dtype
-  """
-
-  updates_to_add = dict()
-  towards_total_minutes = 0
-
-  for key in data_dict.keys():
-    value = get_minutes(key)
-    updates_to_add[key] = value
-    towards_total_minutes += value
-
-  updates_to_add["Total Mins"] = towards_total_minutes
-
-  return updates_to_add
-
 
 # get a dictionary of key, value updates
 updates = get_data_points(topics)
