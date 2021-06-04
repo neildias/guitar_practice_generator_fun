@@ -24,14 +24,17 @@ topics = new_topic_dict if new_topic_dict else topics
 user_topic_timings = utils.topic_duration_capture(topics)
 
 # run countdown clock over users input
-# countdown_timer.countdown_clock(user_topic_timings)
-root = Tk()
-root.title(f"Practice Countdown for Mastery")
-label_object = Label(root,
-                     font=('calibri', 50, 'bold'),
-                     background="blue",
-                     foreground="white")
-gui_timer.gui_timer(user_topic_timings, label_object)
+if len(user_topic_timings) > 1:
+  # without GUI
+  countdown_timer.countdown_clock(user_topic_timings)
+else:
+  root = Tk()
+  root.title(f"Practice Countdown for Mastery")
+  label_object = Label(root,
+                       font=('calibri', 50, 'bold'),
+                       background="blue",
+                       foreground="white")
+  gui_timer.gui_timer(user_topic_timings, label_object)
 
 # add totals key
 user_topic_timings["Total Mins"] = utils.total_dict_values(user_topic_timings)
@@ -43,7 +46,7 @@ df = utils.read_create_database_object(path, filename, user_topic_timings)
 update_date = utils.get_date()
 
 # get a dictionary of key, value updates
-#updates = utilsdfsdf.get_data_points(user_topic_timings)
+#updates = utils.get_data_points(user_topic_timings)
 
 # update the dataframe
 df = df.append(pd.Series(user_topic_timings,
