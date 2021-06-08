@@ -332,7 +332,10 @@ def lesson_iterator(choice: str, short: bool=False):
   print(f'\nYou will be practicing the following under the {topic_chosen} lesson: \n')
   [print("\t",key) for key in relevant_lesson.keys()]
   for lesson, time in relevant_lesson.items():
-    input("\nPress enter to start the lesson... ")
+    play_lesson = input(f"\nPress enter to start practicing {lesson}; and 'n' to skip it: ")
+    if play_lesson == 'n':
+        print(f"\nWARNING! You have chosen to skip {lesson}")
+        continue
     #for lesson in topic_head:
     if short:
       time = time // 2
@@ -353,7 +356,7 @@ def scheduler():
   keep_practicing = True
   lessons_time = dict()
   while keep_practicing:
-    practice_time = input("Will this session with short? Press 1 for yes, else Enter: ")
+    practice_time = input("\nWill this session with short? Press 1 for yes, else Enter: ")
     practice_time = True if practice_time == "1" else False
     print("""\n
 
