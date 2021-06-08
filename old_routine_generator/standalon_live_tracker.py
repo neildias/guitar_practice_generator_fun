@@ -133,12 +133,12 @@ total_lessons = {
 
 lessons_key = {
 
-    "1": "Classical Studies",
-    "2":"Scales" ,
-    "3":"Kitharologus",
-    "4":"Chords",
-    "5":"Creative",
-    "6": "Music Theory",
+    1 : "Classical Studies",
+    2 : "Scales" ,
+    3 : "Kitharologus",
+    4 : "Chords",
+    5 : "Creative",
+    6 : "Music Theory",
 
 }
 
@@ -241,7 +241,7 @@ def read_create_database_object(path: str, filename: str, data_dict: dict):
   try:
     # check if an excel file is available
     df = pd.read_excel(path + filename, index_col=0)
-    print("Found existing database")
+    print("\nFound existing database. \n")
 
   except FileNotFoundError:
     # if unavailable create a dataframe, to be later exported as excel;
@@ -372,14 +372,19 @@ def scheduler():
 
         """)
 
-    practice_header = input("\nWhich among the above categories do you want to "
-                                "practice now? Select by number: ")
-    practice_header = "1" if not practice_header else practice_header
+    practice_header = get_int_input("\nWhich among the above categories do you "
+                                "want to practice now? Select by number: ")
+    # validate header choice
+    if practice_header > 0 and practice_header < 7:
+      practice_header = 1 if not practice_header else practice_header
 
-    practice_data_dict = lesson_iterator(choice=practice_header,
+      practice_data_dict = lesson_iterator(choice=practice_header,
                                            short=practice_time)
 
-    lessons_time.update(practice_data_dict)
+      lessons_time.update(practice_data_dict)
+
+    else:
+      print("\nWrong input! Choose between the number 1 and 6 next time. :)")
 
     another_practice = input("\n\nDo you wish to practice another header."
                               " Press y if yes, else enter: ")
@@ -425,7 +430,20 @@ def column_reorder(df, col_name, position):
   return df
 
 
-if __name__ == '__main__':
+def live_practice_tracker(path, filename, topics):
+  """
+  Combines all functions in the script to run the live practice tracking program
+
+  :param path: str
+  :param filename: str
+  :param topics: dict
+  :return None
+  """
+
+  custom_setting = input("Press enter to use default settings of the script,"
+                         " else press any key. :")
+
+  if custom_setting:
     # get new_path, filename if the user chooses
     new_path, new_filename, new_topic_dict = get_file_path(path,
                                                            filename,
@@ -435,27 +453,34 @@ if __name__ == '__main__':
     filename = new_filename+".xlsx" if new_filename else filename
     topics = new_topic_dict if new_topic_dict else topics
 
-    # get data
-    df = read_create_database_object(path, filename, topics)
+  # get data
+  df = read_create_database_object(path, filename, topics)
 
-    # store date in the update_date variable
-    update_date = get_date()
-    print()
+  # store date in the update_date variable
+  update_date = today if not custom_setting else get_date()
+  print()
 
-    # get a dictionary of key, value updates
-    topics_practiced = scheduler()
-    updates = get_data_points(topics_practiced)
+  # get a dictionary of key, value updates
+  topics_practiced = scheduler()
+  updates = get_data_points(topics_practiced)
 
-    # update the dataframe
-    df = df.append(pd.Series(updates,
-                             name=update_date),
-                   ignore_index=False)
+  # update the dataframe
+  df = df.append(pd.Series(updates,
+                           name=update_date),
+                           ignore_index=False)
 
-    # ensure Total Mins is Last col
-    position = len(df.columns) - 1
-    df = column_reorder(df, "Total Mins", position)
+  # ensure Total Mins is Last col
+  position = len(df.columns) - 1
+  df = column_reorder(df, "Total Mins", position).fillna(0)
 
-    print(df.T)
+  print(df.T)
 
-    # export df as excel doc with the same file name
-    df.fillna(0).to_excel(path + filename, index=True)
+  # export df as excel doc with the same file name
+  df.to_excel(path + filename, index=True)
+
+
+
+if __name__ == '__main__':
+
+  # run the practice tracker sript
+  live_practice_tracker(path, filename, topics)
