@@ -93,10 +93,10 @@ lesson_4 = {
 
     # Chords
     # doubles the strum chord time if add_chord_workout = 'Strum Chords'
-    "Strum Chords": 1*2 if add_chord_workout=="Strum Chords" else 1,
+    "Strum Chords": 10*2 if add_chord_workout=="Strum Chords" else 10,
     # strum on even days, else Arpeggiate
-    "Arpeggiate Chords": 1 if add_chord_workout!="Strum Chords" else 0,
-    "Rasgeo": 1,
+    "Arpeggiate Chords": 10 if add_chord_workout!="Strum Chords" else 0,
+    "Rasgeo": 10,
 
 }
 
