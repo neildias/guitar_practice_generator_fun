@@ -3,7 +3,8 @@
 
 import pandas as pd
 from datetime import date
-import time
+import time, os
+from pprint import pprint
 
 
 path = "P:\\"
@@ -35,54 +36,54 @@ topics = {
     "Golpe": 0,
     "Natural Harmonics": 0,
     "Artificial Harmonics": 0,
-    # "Solea": 0,
-    # "Alegrias": 0,
-    # "Tangos": 0,
-    # "Seguiriya": 0,
-    # "Tarantas": 0,
-    # "Granainas": 0,
-    # "Bulerias": 0,
+    "Solea": 0,
+    "Alegrias": 0,
+    "Tangos": 0,
+    "Seguiriya": 0,
+    "Tarantas": 0,
+    "Granainas": 0,
+    "Bulerias": 0,
     "Improvisation": 0,
-    # "Guitar Licks": 0,
-    # "Flamenco RH": 0,
-    # "Flamenco LH": 0,
+    "Guitar Licks": 0,
+    "Flamenco RH": 0,
+    "Flamenco LH": 0,
     "Tremelo": 0,
-    # "Sweep Picking": 0,
-    # "Hybrid Picking": 0,
-    # "Tapping": 0,
-    # "Harp Harmonics": 0,
-    # "Slap Harmonics:": 0,
-    # "Percussive": 0,
-    # "Whammy bar": 0,
-    # "Pedals": 0,
+    "Sweep Picking": 0,
+    "Hybrid Picking": 0,
+    "Tapping": 0,
+    "Harp Harmonics": 0,
+    "Slap Harmonics:": 0,
+    "Percussive": 0,
+    "Whammy bar": 0,
+    "Pedals": 0,
   }
 
 lesson_1 = {
 
     # Classical
     # lesson 1 total 30 mins
-    "Spider Warmup": 2, #5,
-    "Ear Training": 2,  #5,
-    "Sight Playing (Graded Studies|Classical Pieces)": 2, #20,
+    "Spider Warmup": 5,
+    "Ear Training": 5,
+    "Sight Playing (Graded Studies|Classical Pieces)": 20,
 
 }
 
 lesson_2 = {
 
     # Scales
-    "Scales Pick": 1, #10,
-    "slurs": 1, #5,
-    "Vibrato": 1, #5,
-    "Picado": 1, #10,
+    "Scales Pick": 10,
+    "slurs": 5,
+    "Vibrato": 5,
+    "Picado": 10,
 }
 
 lesson_3 = {
 
     # technical workout
     # lesson 2 total 35 mins
-    "FretBoard Mastery": 1, #5,
-    "Kitharologus": 1, #20,
-    "Natural Harmonics": 1, #5,
+    "FretBoard Mastery": 5,
+    "Kitharologus": 20,
+    "Natural Harmonics": 5,
 }
 
 # add chord workout on even days of the week
@@ -91,25 +92,26 @@ add_chord_workout = "Strum Chords" if today.day % 2 == 0 else "Arpeggiate Chords
 lesson_4 = {
 
     # Chords
-    "Strum Chords": 1, #10,
+    # doubles the strum chord time if add_chord_workout = 'Strum Chords'
+    "Strum Chords": 1*2 if add_chord_workout=="Strum Chords" else 1,
     # strum on even days, else Arpeggiate
-    add_chord_workout: 1, #10,
-    "Rasgeo": 1, #10,
+    "Arpeggiate Chords": 1 if add_chord_workout!="Strum Chords" else 0,
+    "Rasgeo": 1,
 
 }
 
 # choose Improvisation on even days of the week
-creative_workout = "Improvisation" if today.day % 2 == 0 else "Song (Rhythm)"
+creative_workout = "Improvisation" if today.day % 2 == 0 else "Rhythm (Song) Practice"
 
 lesson_5 = {
 
     # technical workout - others
     # Improvise on even days, else play rhythm songs
-    creative_workout: 1, #10,
-    "Bends": 1, #5,
-    "Alzapua": 1, #5,
-    "Tremelo": 1, #5,
-    "Chord Ear Training": 1, #5,
+    creative_workout: 10,
+    "Bends": 5,
+    "Alzapua": 5,
+    "Tremelo": 5,
+    "Chord Ear Training": 5,
 
 }
 
@@ -139,6 +141,22 @@ lessons_key = {
     "6": "Music Theory",
 
 }
+
+
+def get_int_input(message: str):
+  """
+  A simple function to get int inputs from the user.
+
+  :param message: str | Message that goes into the prompt
+  :return int | int input
+  """
+  while True:
+    try:
+      int_input = int(input(message))
+      return int_input
+    except:
+      print("Wrong Input! Please enter a number. ")
+
 
 
 def get_file_path(path: str, filename: str, data_dict: dict):
@@ -311,15 +329,18 @@ def lesson_iterator(choice: str, short: bool=False):
   lessons_time = {}
   topic_chosen = lessons_key[choice]
   relevant_lesson = total_lessons[topic_chosen]
-  print(f'You will be practicing this {relevant_lesson.keys()}.')
+  print(f'\nYou will be practicing the following under the {topic_chosen} lesson: \n')
+  [print("\t",key) for key in relevant_lesson.keys()]
   for lesson, time in relevant_lesson.items():
-    input("Press enter to start the lesson... ")
+    input("\nPress enter to start the lesson... ")
     #for lesson in topic_head:
     if short:
       time = time // 2
-    lessons_time[lesson] = time
+    if lesson in lessons_time:  # add time
+      lessons_time[lesson] += time
+    else:
+      lessons_time[lesson] = time  # introduce the lesson
     countdown(time, lesson)
-    print("\n")
 
   return lessons_time
 
@@ -357,8 +378,8 @@ def scheduler():
 
     lessons_time.update(practice_data_dict)
 
-    another_practice = input("Do you wish to practice another header. \
-                              Press y if yes, else enter: ")
+    another_practice = input("\n\nDo you wish to practice another header."
+                              " Press y if yes, else enter: ")
     if not another_practice == "y":
       keep_practicing = False
   return lessons_time
@@ -378,11 +399,11 @@ def get_data_points(data_dict: dict):
     updates_to_add[lesson] = time
     towards_total_minutes += time
   updates_to_add["Total Mins"] = towards_total_minutes
-  updates_to_add["Lowest Tempo"] = int(input(
-                                    "\nPlease input lowest temp practiced at: ")
+  updates_to_add["Lowest Tempo"] = get_int_input(
+                                    "\nPlease input lowest temp practiced at: "
   )
-  updates_to_add["Highest Tempo"] = int(input(
-                                   "\nPlease input highest temp practiced at: ")
+  updates_to_add["Highest Tempo"] = get_int_input(
+                                   "\nPlease input highest temp practiced at: "
   )
   return updates_to_add
 
