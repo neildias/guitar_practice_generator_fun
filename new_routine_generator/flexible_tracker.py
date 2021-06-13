@@ -85,21 +85,7 @@ def live_practice_tracker(path: str,
   # ensure Notes is the last column
   df_notes = utils.column_reorder(df_notes, "Notes")
 
-  # todays_update
-
-  # todays_note_duration = df_notation.iloc[-1, :]
-  # todays_tempo_values = df_tempo.iloc[-1, :]
-  # todays_notation_dict = utils.series_to_dict(todays_note_duration)
-  # todays_tempo_dict = utils.series_to_dict(todays_tempo_values)
-  # df_today_log = (pd.DataFrame()
-  #                .append(pd.Series(
-  #                                  utils.merge_dicts_value(todays_update,
-  #                                                          todays_tempo_dict,
-  #                                                          todays_notation_dict),
-  #                                  name=update_date),
-  #                        ignore_index=False))
-  # df_time_log["Interpretation"] = "Time, Tempo, Note_Value"
-
+  # only todays logs
   df_today_log = utils.todays_time_tempo_notation_df(todays_update,
                                                      df_tempo,
                                                      df_notation,
