@@ -106,7 +106,11 @@ def create_database_object(data_dict: dict, prnt_msg=True):
   # notes sheet
   df_notes = pd.DataFrame({"Notes": ""}, index=today_pandas_index)
 
-  return df_time_log, df_tempo, df_notation, df_notes
+  # todays sheet
+  df_today = pd.DataFrame(index=today_pandas_index, columns="lesson_1 "
+                                                            "lesson2".split())
+
+  return df_time_log, df_tempo, df_notation, df_notes, df_today
 
 
 def read_database_object(path: str,
@@ -138,26 +142,26 @@ def read_database_object(path: str,
     # check if an excel file is available
     df_dict = pd.read_excel(complete_path,
                             sheet_name = "Time_Log Tempo Notation "
-                                         "Notes".split(),
+                                         "Notes Today".split(),
                             index_col = 0)
     # get dataframe from the above dictionary object
     df_time_log = df_dict["Time_Log"]
     df_tempo = df_dict["Tempo"]
     df_notation = df_dict["Notation"]
     df_notes = df_dict["Notes"]
-    #_ = df_dict["Today"]     # discarded
+    df_today = df_dict["Today"]     # discarded
 
     print(f"\nFound existing database at {path+complete_path} \n")
 
   except FileNotFoundError:
     # if unavailable create a dataframe, to be later exported as excel;
     all_dfs = create_database_object(data_dict)
-    df_time_log, df_tempo, df_notation, df_notes = all_dfs
+    df_time_log, df_tempo, df_notation, df_notes, df_today = all_dfs
 
   except Exception as e:
     print(f"\nERROR! Encountered {e}")
     all_dfs = create_database_object(data_dict)
 
-    df_time_log, df_tempo, df_notation, df_notes = all_dfs
+    df_time_log, df_tempo, df_notation, df_notes, df_today = all_dfs
 
-  return df_time_log, df_tempo, df_notation, df_notes
+  return df_time_log, df_tempo, df_notation, df_notes, df_today

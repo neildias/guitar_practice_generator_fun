@@ -245,24 +245,26 @@ practice_lesson_header_message = f"""\n
 note_duration = ("\nNote duration for each beat? "
                  "\nOptions:"
                  "\n-------"
-                 "\nNo Notes         0/0   (0)"
-                 "\nDouble           8/1   (1)"
-                 "\nWhole            4/1   (2)"
-                 "\nHalf             4/2   (3)"
-                 "\nQuarter          4/4   (4)"
-                 "\nEighth           4/8   (5)"
-                 "\nSixteenth        4/16  (6)"
-                 "\nThirtySecondth   4/32  (7)"
-                 "\nSixtyFourth      4/64  (8)")
+                 "\nNo Notes             0/0    (0)"
+                 "\nDouble               8/1    (1)"
+                 "\nWhole                4/1    (2)"
+                 "\nHalf                 4/2    (3)"
+                 "\nQuarter              4/4    (4)"
+                 "\nEighth               4/8    (5)"
+                 "\nSixteenth            4/16   (6)"
+                 "\nThirtySecondth       4/32   (7)"
+                 "\nSixtyFourth          4/64   (8)",
+                 "\nOne-twenty-Eighth    4/128  (8)",)
 
 note_duration_dict = {
-    0: "None",
-    1: "Double",
-    2: "Whole",
-    3: "Half",
-    4: "Quarter",
-    5: "Eighth",
-    6: "Sixteenth",
-    7: "ThirtySecondth",
-    8: "SixtyFourth",
+    0: "X",     # Unused
+    1: "D",     # Double
+    2: "W",     # whole note
+    3: "H",     # half note
+    4: "4",     # Quarter
+    5: "8",     # Eighth
+    6: "16",    # Sixteeth
+    7: "32",    # thirty-Second
+    8: "64",    # Sixty-fourth
+    9: "128",    # One-twenty-Eighth
 }

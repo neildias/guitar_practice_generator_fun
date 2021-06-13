@@ -1,5 +1,6 @@
 from utils.default_params import today, note_duration, note_duration_dict
 import pandas as pd
+import numpy as np
 
 
 def get_int_input(message: str):
@@ -164,7 +165,7 @@ def get_tempo_note_duration():
   print(note_duration)
   note = get_input_number(message="Enter your note value here: ",
                           starting=0,
-                          ending=8,
+                          ending=9,
                           allow_no_input=False)
 
   note_duration_practiced = note_duration_dict.get(int(note))
@@ -239,7 +240,8 @@ def merge_dicts_value(primary_dict, *dictionaries):
         merged_dict[key].append(other_value)
   return merged_dict
 
-def todays_time_tempo_notation_df(time_dict, tempo_dict, notation_dict, index):
+
+def todays_df(time_dict, tempo_dict, notation_dict, index):
   """
 
   :param time_dict:
@@ -247,21 +249,99 @@ def todays_time_tempo_notation_df(time_dict, tempo_dict, notation_dict, index):
   :param notation_dict:
   :return:
   """
+
   # get last row
   todays_tempo_values = tempo_dict.iloc[-1, :]
   todays_note_duration = notation_dict.iloc[-1, :]
+
   # convert to dictionary
   todays_notation_dict = series_to_dict(todays_note_duration)
   todays_tempo_dict = series_to_dict(todays_tempo_values)
+
+  final = {}
+  counter = 1
+  for key in time_dict.keys():
+    if key == "Total Mins":
+      continue
+    final["lesson_" + str(counter)] = [key,
+                                       time_dict[key],
+                                       todays_notation_dict[key],
+                                       todays_tempo_dict[key]]
+    counter+=1
+
+  # convert to multiindex dataframe
+
+  # create multiindex
+  time_keys = np.array([str(index)] * 4)
+  tempo_keys = np.array(["LessonName", "Time", "tempo", "note"])
+  multiindex = [time_keys, tempo_keys]
+
+  todays_multi_index_df = pd.DataFrame(data=final, index=multiindex)
+
+
   # merge all dictionaries
-  todays_df = (pd.DataFrame()
-              .append(pd.Series(
-                                merge_dicts_value(time_dict,
-                                                  todays_tempo_dict,
-                                                  todays_notation_dict),
-                                                  name=index),
-                                ignore_index=False))
+  # todays_df = (pd.DataFrame()
+  #             .append(pd.Series(
+  #                               merge_dicts_value(time_dict,
+  #                                                 todays_tempo_dict,
+  #                                                 todays_notation_dict),
+  #                                                 name=index),
+  #                               ignore_index=False))
 
-  todays_df["Interpretation"] = "Time, Tempo, Note_Value"
+  # todays_df["Interpretation"] = "Time, Tempo, Note_Value"
 
-  return todays_df
+  return todays_multi_index_df
+
+
+def todays_series(time_dict, tempo_dict, notation_dict, index):
+  """
+
+  :param time_dict:
+  :param tempo_dict:
+  :param notation_dict:
+  :return:
+  """
+
+  # get last row
+  todays_tempo_values = tempo_dict.iloc[-1, :]
+  todays_note_duration = notation_dict.iloc[-1, :]
+
+  # convert to dictionary
+  todays_notation_dict = series_to_dict(todays_note_duration)
+  todays_tempo_dict = series_to_dict(todays_tempo_values)
+
+  final = {}
+  counter = 1
+  for key in time_dict.keys():
+    if key == "Total Mins":
+      continue
+    final["lesson_" + str(counter)] = [key,
+                                       time_dict[key],
+                                       todays_notation_dict[key],
+                                       todays_tempo_dict[key]]
+    counter+=1
+
+  # convert to multiindex dataframe
+
+  # create multiindex
+  time_keys = np.array([str(index)] * 4)
+  tempo_keys = np.array(["LessonName", "Time", "tempo", "note"])
+  multiindex = [time_keys, tempo_keys]
+
+  todays_multi_index_series = pd.Series(data=final,
+                                        index=multiindex,
+                                        name=index)
+
+
+  # merge all dictionaries
+  # todays_df = (pd.DataFrame()
+  #             .append(pd.Series(
+  #                               merge_dicts_value(time_dict,
+  #                                                 todays_tempo_dict,
+  #                                                 todays_notation_dict),
+  #                                                 name=index),
+  #                               ignore_index=False))
+
+  # todays_df["Interpretation"] = "Time, Tempo, Note_Value"
+
+  return todays_multi_index_series

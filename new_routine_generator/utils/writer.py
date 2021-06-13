@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from utils.default_params import main_file_name, record_log, todays_full_date
 from datetime import datetime
+import xlsxwriter
 
 
 today = datetime.now()  # use time at the time of writing the file
@@ -37,9 +38,50 @@ def create_new_filename(original_filename: str,
   return new_filename
 
 
+def formatter(df,workbook_object, sheet_object, highlight_val: int):
+  """
+  Uses Xlwriter library to do formatting of cell width, conditional formatting
+  :param worksheet:
+  :param sheet_object:
+  :return:
+  """
+  # set cell width
+  sheet_object.set_column(0, 0, 19)  # date col
+  sheet_object.set_column(1, 200, 2.71) # rest of the cols
+
+  # 2 formatting
+  # rotate column headers
+  # works at cell level
+  cell_format = workbook_object.add_format()
+  cell_format.set_rotation(90)
+  counter = 1
+  for col_name in df.columns.tolist():
+                      # row, col, text, format
+    sheet_object.write(0, counter, col_name, cell_format)
+    counter += 1
+
+  # 3rd formatting
+  # highlight entries higher than given value
+  # works at sheet level
+  # green if greater than highlight_val
+  cond_format = workbook_object.add_format()
+  cond_format.set_font_size(14)
+  cond_format.set_bold()
+  cond_format.set_underline()
+  cond_format.set_pattern(0)
+  cond_format.set_bg_color('#99FF99')
+  # frow,fcol,lrow,lcol
+  sheet_object.conditional_format(1, 1, 2000, 200, {'type': 'cell',
+                                             'criteria': '>=',
+                                             'value': highlight_val,
+                                             'format': cond_format})
+
+
+
 def write_excel(path: str,
                 filename: str,
                 *dfs,
+                highlight_val: int,
                 include_date:bool):
   """
   writes 3 dataframes to 3 sheets in an existing excel file (or creates one).
@@ -64,13 +106,32 @@ def write_excel(path: str,
     path = "C:\\Users\\Neil\Desktop\\"
     filename = filename[:100] + ".xlsx"
 
-  with pd.ExcelWriter(full_path) as writer:
+  with pd.ExcelWriter(full_path, engine='xlsxwriter') as writer:
+
     df1.to_excel(writer, sheet_name="Time_Log")
     df2.to_excel(writer, sheet_name="Tempo")
     df3.to_excel(writer, sheet_name="Notation")
     df4.to_excel(writer, sheet_name="Notes")
     df5.to_excel(writer, sheet_name="Today")
     print(f"\nSUCCESS! Dataframe values stored in {path + filename}")
+
+    try: # some minimilist formatting
+      workbook = writer.book
+      tl_log = writer.sheets['Time_Log']
+      tempo_ = writer.sheets['Tempo']
+      notation_ = writer.sheets['Notation']
+      my_notes = writer.sheets['Notes']
+      todays_ = writer.sheets['Today']
+      for sheet in [tl_log, tempo_, notation_, my_notes, todays_]:
+        if sheet in [my_notes, todays_]:
+          sheet.set_column(0, 200, 50)
+        else:
+          formatter(df2, workbook, sheet, highlight_val)
+
+      print("Formatting successfully applied!")
+
+    except Exception as e:
+      print(e)
 
   with open(path+record_log, "a+") as f:
     f.writelines(todays_full_date+"\n")
@@ -79,6 +140,7 @@ def write_excel(path: str,
 def data_to_excel(path: str,
                   filename: str,
                   *dfs: "DataFrame",
+                  highlight_val: int = 5,
                   date_in_name: bool = True):
   """
   Creates excel with 5 sheets from the given dataframes
@@ -100,7 +162,11 @@ def data_to_excel(path: str,
   while True:
     try:
       # writing to the main file
-      write_excel(path, main_file_name, *dfs, include_date=date_in_name)
+      write_excel(path,
+                  main_file_name,
+                  *dfs,
+                  highlight_val=highlight_val,
+                  include_date=date_in_name)
       break
 
     except PermissionError:

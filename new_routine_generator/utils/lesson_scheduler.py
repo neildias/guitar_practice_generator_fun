@@ -3,7 +3,12 @@ from .timer import countdown
 from .default_params import practice_lesson_header_message, total_lessons, lessons_key
 
 
-def lesson_iterator(choice: str, duration: str, flexible: bool):
+def lesson_iterator(lessons_time: dict,
+                    tempo_dict: dict,
+                    note_duration_dict: dict,
+                    choice: str,
+                    duration: str,
+                    flexible: bool):
   """
   Iterates over the lesson dictionary, runs the timer according to each lesson
   and return a tuple of dictionaries of lesson, time and header values
@@ -13,9 +18,9 @@ def lesson_iterator(choice: str, duration: str, flexible: bool):
   :param flexible: bool
   :return: tuple of dict: updated lessons_dict, dict_time, str of header values
   """
-  lessons_time = {}
-  tempo_dict = {}
-  note_duration_dict = {}
+  # lessons_time =
+  # tempo_dict = {}
+  # note_duration_dict = {}
   topic_chosen = lessons_key[choice]
   relevant_lesson = total_lessons[topic_chosen]
 
@@ -25,6 +30,7 @@ def lesson_iterator(choice: str, duration: str, flexible: bool):
   print_keys(relevant_lesson, duration=duration, message="mins")
 
   # a string of practice heads to add in the notes sheet
+  # only last practice header recorded in case multiple sessions chosen
   practice_header_for_notes = dict_keys_to_str(relevant_lesson)
 
   for lesson, time in relevant_lesson.items():
@@ -69,6 +75,7 @@ def scheduler(flexible=True):
   lessons_time = dict()
   practice_notes_dict = dict()
   tempo_dict = dict()
+  note_duration_dict = dict()
 
   # message to customise timing depending on flexible param
   if flexible:
@@ -107,14 +114,22 @@ if yes, press 0.5 to cut the session by half;
     if practice_header > 0 and practice_header < 7:
       practice_header = 1 if not practice_header else practice_header
 
-      practice_data_dict, tempo_dict, note_dura_dict, practice_header = \
+      practice_data_dict, tempo_dict2, note_dura_dict, practice_header = \
         lesson_iterator(
+                # pass empty or non-empty dicts
+                lessons_time=lessons_time,
+                tempo_dict=tempo_dict,
+                note_duration_dict=note_duration_dict,
+                # other params
                 choice=practice_header,
                 duration=practice_time,
                 flexible=flexible,
       )
 
+      # update dicts with new practice data
       lessons_time.update(practice_data_dict)
+      tempo_dict.update(tempo_dict2)
+      note_duration_dict.update(note_dura_dict)
 
       # ask for notes here.
       practice_notes_dict["Topics Practices"] = practice_header
@@ -138,5 +153,5 @@ if yes, press 0.5 to cut the session by half;
 
   return (lessons_time,
           tempo_dict,
-          note_dura_dict,
+          note_duration_dict,
           practice_notes_dict)
