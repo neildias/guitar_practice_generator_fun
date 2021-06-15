@@ -1,6 +1,7 @@
 from utils.default_params import today, note_duration, note_duration_dict
 import pandas as pd
 import numpy as np
+import datetime
 
 
 def get_int_input(message: str):
@@ -14,7 +15,7 @@ def get_int_input(message: str):
     try:
       int_input = int(input(message))
       return int_input
-    except:
+    except ValueError:
       print("Wrong Input! Please enter a number. ")
 
 
@@ -31,11 +32,15 @@ def get_date():
       "To input a custom date, enter the same in dd-mm-yyyy;"
       " else press ENTER : "
     )
+    
     if not custom_date:
       return today
+    
     else:
+      
       try:
         return pd.to_datetime(custom_date, format="%d-%m-%Y")
+      
       except ValueError:
         print("Wrong Input!!! Either press plain enter key, or provide date in "
               "dd-mm-yyyy format. Try again!")
@@ -54,8 +59,8 @@ def dict_keys_to_str(dictionary: dict):
 
 def print_keys(dictionary: dict,
                value: bool = True,
-               duration: bool =False,
-               message: str =""):
+               duration: bool = False,
+               message: str = ""):
   """
   Prints all the keys of the dictionary passed. Note that the duration and the
   message arguments are only used if "value" is set to True
@@ -93,7 +98,7 @@ def get_input_number(message: str,
   :param starting: int starting number
   :param ending: int ending number
   :param allow_no_input: bool | allows no input == ""
-  :return int or float
+  :return float
   """
   
   while True:
@@ -109,13 +114,14 @@ def get_input_number(message: str,
       # else try to convert to float
       number = float(number)
       
-      if number >= starting and number <= ending:
+      if (number >= starting) and (number <= ending):
         break
       
       else:
         print(f"\nPlease input a number from {starting} and {ending}, "
               f"inclusive both")
-    except:
+        
+    except ValueError:
       print("Invalid input. Please enter a number eg. 1 or 0.5. ")
   
   return number
@@ -138,8 +144,8 @@ def get_data_points(data_dict: dict,
     towards_total_minutes += time
     
     if only_practiced_items:
-      # removes values with zero minutes
       
+      # removes values with zero minutes - unpracticed lessons
       if not time:
         del data_dict[lesson]
   
@@ -192,13 +198,12 @@ def get_tempo_note_duration():
   return tempo, note_duration_practiced
 
 
-
-def extract_last_date(path, logfile):
+def extract_last_date(path: str, logfile):
   """
-  
-  :param path:
+  extracts last entry (date) from the log file
+  :param path: str
   :param logfile:
-  :return:
+  :return: str | date
   """
 
   with open(path + logfile) as f:
@@ -213,8 +218,11 @@ def extract_last_date(path, logfile):
   return last_date
 
 
-def concat_last_date_2file_name(filename, path, log_file):
+def concat_last_date_2file_name(filename: str,
+                                path: str,
+                                log_file):
   """
+  concatenates last date to file name
   
   :param filename:
   :param path:
@@ -228,42 +236,44 @@ def concat_last_date_2file_name(filename, path, log_file):
   return filename_date
 
 
-def df_to_dict(df):
+def df_to_dict(df: pd.DataFrame):
   """
-
-  :param dictionary:
-  :return:
+  converts a dataframe to a dictionary in the format expected by other codes
+  in the package
+  
+  :param df:
+  :return: dict
   """
   
   new = {}
-  
   for key, value in df.iteritems():
     new[key] = list(value.values)
-  
   return new
 
 
-def series_to_dict(series):
+def series_to_dict(series: pd.Series):
   """
-
+  Converts a pandas series to a dict in the format needed by other codes in
+  the package
+  
   :param series:
   :return:
   """
   
   new = {}
-  
   for key, value in series.iteritems():
     new[key] = value
-  
   return new
 
 
-def merge_dicts_value(primary_dict, *dictionaries):
+def merge_dicts_value(primary_dict: dict, *dictionaries: dict):
   """
-
-  :param primary_dict:
-  :param dictionaries:
-  :return:
+  Merges the values of various dictionarys to the common key of the primary
+  dictionary
+  
+  :param primary_dict: dict
+  :param dictionaries: dict
+  :return: dict
   """
   
   merged_dict = {}
@@ -288,12 +298,18 @@ def merge_dicts_value(primary_dict, *dictionaries):
   return merged_dict
 
 
-def todays_df(time_dict, tempo_dict, notation_dict, index):
+def todays_df(time_dict: dict,
+              tempo_dict: dict,
+              notation_dict: dict,
+              index: datetime.date):
   """
-
+  Returns the last value of all dictionaries into a dataframe with today's
+  date as the index
+  
   :param time_dict:
   :param tempo_dict:
   :param notation_dict:
+  :param index:
   :return:
   """
 
@@ -317,15 +333,14 @@ def todays_df(time_dict, tempo_dict, notation_dict, index):
                                        time_dict[key],
                                        todays_notation_dict[key],
                                        todays_tempo_dict[key]]
-    counter+=1
+    counter += 1
 
-
-  # create multiindex
+  # create multi_index
   time_keys = np.array([index, index, index, index] )
   tempo_keys = np.array(["LessonName", "Time", "tempo", "note"])
-  multiindex = [time_keys, tempo_keys]
+  multi_index = [time_keys, tempo_keys]
 
-  todays_multi_index_df = pd.DataFrame(data=final, index=multiindex)
+  todays_multi_index_df = pd.DataFrame(data=final, index=multi_index)
 
   return todays_multi_index_df
 
@@ -359,15 +374,15 @@ def todays_series(time_dict, tempo_dict, notation_dict, index):
                                        time_dict[key],
                                        todays_notation_dict[key],
                                        todays_tempo_dict[key]]
-    counter+=1
+    counter += 1
 
-  # create multiindex
+  # create multi_index
   time_keys = np.array([str(index)] * 4)
   tempo_keys = np.array(["LessonName", "Time", "tempo", "note"])
-  multiindex = [time_keys, tempo_keys]
+  multi_index = [time_keys, tempo_keys]
 
   todays_multi_index_series = pd.Series(data=final,
-                                        index=multiindex,
+                                        index=multi_index,
                                         name=index)
 
   return todays_multi_index_series
@@ -387,16 +402,19 @@ def update_dictionary(dictionary: dict,
   If key already present, attempts to concat values, but if it fails it
   replaces the old value.
   
-  keep_duplicates only used if by_concat is set to True
+  keep_duplicates only used if by_concat is set to True.
   
-  :param dictionary: dict
-  :param key: str
-  :param value: str
-  :param by: bool
-  :param handle_error: bool
-  :param keep_duplicates: bool
-  :return:
+  Returns the updated dictionary.
+  
+  :param dictionary:
+  :param key:
+  :param value:
+  :param by_concat:
+  :param handle_error:
+  :param keep_duplicates:
+  :return: dict
   """
+  
   assert isinstance(dictionary, dict), f"Dict data type expected, got " \
                                        f"{type(dictionary)}"
   try:

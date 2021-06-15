@@ -18,8 +18,12 @@ def get_hours_minutes_seconds(time_in_seconds: int):
 
 def countdown(time_in_minutes: int, topic_header: str):
   """
-  :param time_in_seconds: int
-  :return: None
+  runs a timer countdown clock based on the minutes inputted displaying the
+  topic header for which the timer is running.
+  
+  :param time_in_minutes:
+  :param topic_header:
+  :return:
   """
   seconds = 60
   timer = abs(int(float(time_in_minutes*seconds)))

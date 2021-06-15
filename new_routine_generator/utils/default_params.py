@@ -122,23 +122,28 @@ topics = {
 # lessons
 
 lesson_1 = {
+    
     # Classical
     # lesson 1 total 30 mins
     "Spider Warmup": 5,
     "Ear Training Melody": 5,
     "Sight Playing Graded": 40,
     "Picado": 10,
+    
 }
 
 lesson_2 = {
+    
     # Scales 40
     "Scale Shapes": 15,
     "Scale Modes (Sound)": 15,
     "2 Octave Scales": 15,
     "Economy Picking": 15,
+    
 }
 
 lesson_3 = {
+    
     # technical workout 60 mins
     "Kitharologus": 15,
     "Natural Harmonics": 5,
@@ -147,6 +152,7 @@ lesson_3 = {
     "Slide": 5,
     "Bends": 10,
     "Tremelo": 10,
+    
 }
 
 # add chord workout on even days of the week
@@ -154,6 +160,7 @@ lesson_3 = {
 # Chords"
 
 lesson_4 = {
+    
     # Chords
     # doubles the strum chord time if add_chord_workout = 'Strum Chords'
     "Chord_Changing": 15,
@@ -162,6 +169,7 @@ lesson_4 = {
     "Arpeggiate Chords": 10,
     "Chords with Rasgeo": 10,
     "Ear Training Rhythm": 5,
+    
 }
 
 # choose Improvisation on even days of the week
@@ -178,10 +186,12 @@ lesson_5 = {
 }
 
 lesson_6 = {
+    
     "Music_Theory Rhythm": 10,
     "Music_Theory Melody": 10,
     "Sight Reading_App": 10,
     "FB Mastery Find Tonic": 10,
+    
 }
 
 
@@ -194,7 +204,6 @@ total_lessons = {
     "Chords": lesson_4,
     "Creative": lesson_5,
     "Music Theory": lesson_6,
-
 
 }
 

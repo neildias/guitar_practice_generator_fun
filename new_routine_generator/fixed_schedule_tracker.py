@@ -3,7 +3,7 @@ from flexible_tracker import live_practice_tracker
 
 
 path = utils.path
-filename = utils.current_filename
+filename = utils.main_file_name
 topics = utils.topics
 
 
