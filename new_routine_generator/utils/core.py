@@ -71,10 +71,11 @@ def print_keys(dictionary: dict,
     if value:
       
       if not duration:
-        print(key, value, message)
+        print(key, val, message)
         
-      elif isinstance(duration, float):
-        print(key, round(value*duration,2), message)
+      elif isinstance(duration, float) or isinstance(duration, int):
+        
+        print(key, round(val*duration,2), message)
     
     else:
       print(key)

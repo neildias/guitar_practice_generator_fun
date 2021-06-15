@@ -46,7 +46,7 @@ def lesson_iterator(lessons_time: dict,
         f'lesson: \n')
 
   # print for the user to know what s/he will be practicing
-  print_keys(relevant_lesson, duration = duration, message="of original time")
+  print_keys(relevant_lesson, duration = duration, message="mins")
 
   # a string of practice heads to add in the notes sheet
   # only last practice header recorded in case multiple sessions chosen
