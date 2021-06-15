@@ -233,10 +233,9 @@ def write_excel(path: str,
       sheets = [tl_log_, tempo_, notation_, my_notes_, today_]
       
       for sheet in sheets:
-        from pprint import pprint
         
-        # pprint(dir(sheet))
         if sheet in [my_notes_, today_]:
+          
           if sheet is today_:
             row_col_val_today = (0, 20, 20)
             
@@ -253,6 +252,7 @@ def write_excel(path: str,
             column_width_setter(sheet, *row_col_val_notes)
         
         else:
+          
           row_col_val_others = (
                   (0, 0, 19),
                   (1, 200, 3)
