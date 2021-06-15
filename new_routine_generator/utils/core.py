@@ -66,15 +66,16 @@ def print_keys(dictionary: dict,
   :param message: str
 
   """
-  for key, value in dictionary.items():
+  for key, val in dictionary.items():
+    
     if value:
-
+      
       if not duration:
         print(key, value, message)
+        
       elif isinstance(duration, float):
-        print(key,
-              round(value*duration,2),
-              message)
+        print(key, round(value*duration,2), message)
+    
     else:
       print(key)
 
@@ -93,21 +94,29 @@ def get_input_number(message: str,
   :param allow_no_input: bool | allows no input == ""
   :return int or float
   """
+  
   while True:
+    
     try:
+      
       number = input(message)
+      
       if allow_no_input: # exit if no input received
         if number == "":
           return
+      
       # else try to convert to float
       number = float(number)
+      
       if number >= starting and number <= ending:
         break
+      
       else:
         print(f"\nPlease input a number from {starting} and {ending}, "
               f"inclusive both")
     except:
       print("Invalid input. Please enter a number eg. 1 or 0.5. ")
+  
   return number
 
 
@@ -122,13 +131,17 @@ def get_data_points(data_dict: dict,
 
   updates_to_add = dict()
   towards_total_minutes = 0
+  
   for lesson, time in data_dict.items():
     updates_to_add[lesson] = time
     towards_total_minutes += time
+    
     if only_practiced_items:
       # removes values with zero minutes
+      
       if not time:
         del data_dict[lesson]
+  
   updates_to_add["Total Mins"] = towards_total_minutes
 
   return updates_to_add
@@ -142,11 +155,14 @@ def column_reorder(df, col_name, position=None):
   :param position:
   :return:
   """
+  
   if position is None:
     position = len(df.columns) - 1
+  
   temp_series = df[col_name]
   df = df.drop(col_name, axis=1)
   df.insert(loc=position, column=col_name, value=temp_series)
+  
   return df
 
 
@@ -155,12 +171,14 @@ def get_tempo_note_duration():
 
   :return: str
   """
+  
   # get tempo
   tempo_message = "\n\nPlease enter the LAST tempo used for this practice: "
   tempo = get_input_number(message=tempo_message,
                            starting=0,
                            ending=300,
                            allow_no_input=False)
+  
   # get note duration
   print(note_duration)
   note = get_input_number(message="Enter your note value here: ",
@@ -169,28 +187,43 @@ def get_tempo_note_duration():
                           allow_no_input=False)
 
   note_duration_practiced = note_duration_dict.get(int(note))
+  
   return tempo, note_duration_practiced
 
 
 
 def extract_last_date(path, logfile):
-  # logic -
-  # read the last file name using log
-  # get date from log and concatenate it to the actual file name
-  # write a file name with new date as usual
-  # half of
+  """
+  
+  :param path:
+  :param logfile:
+  :return:
+  """
+
   with open(path + logfile) as f:
+    
     try:
       dates = f.readlines()
       last_date = dates[-1]
+      
     except IndexError or FileNotFoundError:
       last_date = ""
+      
   return last_date
 
 
 def concat_last_date_2file_name(filename, path, log_file):
+  """
+  
+  :param filename:
+  :param path:
+  :param log_file:
+  :return:
+  """
+  
   last_date = extract_last_date(path, log_file)[:-1]  #ignore new line
   filename_date = f"{filename}_{last_date}.xlsx"
+  
   return filename_date
 
 
@@ -200,9 +233,12 @@ def df_to_dict(df):
   :param dictionary:
   :return:
   """
+  
   new = {}
+  
   for key, value in df.iteritems():
     new[key] = list(value.values)
+  
   return new
 
 
@@ -212,9 +248,12 @@ def series_to_dict(series):
   :param series:
   :return:
   """
+  
   new = {}
+  
   for key, value in series.iteritems():
     new[key] = value
+  
   return new
 
 
@@ -225,19 +264,26 @@ def merge_dicts_value(primary_dict, *dictionaries):
   :param dictionaries:
   :return:
   """
+  
   merged_dict = {}
+  
   for dictionary in dictionaries:
+    
     for key, value in primary_dict.items():
+      
       if dictionary.get(key) is None:
         continue
+      
       other_value = (int(dictionary[key])
                      if isinstance(dictionary[key], float)
                      else dictionary[key])
 
       if key not in merged_dict:
         merged_dict[key] = [value, other_value]
+      
       else:
         merged_dict[key].append(other_value)
+  
   return merged_dict
 
 
@@ -260,35 +306,25 @@ def todays_df(time_dict, tempo_dict, notation_dict, index):
 
   final = {}
   counter = 1
+  
   for key in time_dict.keys():
+    
     if key == "Total Mins":
       continue
+      
     final["lesson_" + str(counter)] = [key,
                                        time_dict[key],
                                        todays_notation_dict[key],
                                        todays_tempo_dict[key]]
     counter+=1
 
-  # convert to multiindex dataframe
 
   # create multiindex
-  time_keys = np.array([str(index)] * 4)
+  time_keys = np.array([index, index, index, index] )
   tempo_keys = np.array(["LessonName", "Time", "tempo", "note"])
   multiindex = [time_keys, tempo_keys]
 
   todays_multi_index_df = pd.DataFrame(data=final, index=multiindex)
-
-
-  # merge all dictionaries
-  # todays_df = (pd.DataFrame()
-  #             .append(pd.Series(
-  #                               merge_dicts_value(time_dict,
-  #                                                 todays_tempo_dict,
-  #                                                 todays_notation_dict),
-  #                                                 name=index),
-  #                               ignore_index=False))
-
-  # todays_df["Interpretation"] = "Time, Tempo, Note_Value"
 
   return todays_multi_index_df
 
@@ -312,16 +348,17 @@ def todays_series(time_dict, tempo_dict, notation_dict, index):
 
   final = {}
   counter = 1
+  
   for key in time_dict.keys():
+    
     if key == "Total Mins":
       continue
+      
     final["lesson_" + str(counter)] = [key,
                                        time_dict[key],
                                        todays_notation_dict[key],
                                        todays_tempo_dict[key]]
     counter+=1
-
-  # convert to multiindex dataframe
 
   # create multiindex
   time_keys = np.array([str(index)] * 4)
@@ -332,16 +369,71 @@ def todays_series(time_dict, tempo_dict, notation_dict, index):
                                         index=multiindex,
                                         name=index)
 
-
-  # merge all dictionaries
-  # todays_df = (pd.DataFrame()
-  #             .append(pd.Series(
-  #                               merge_dicts_value(time_dict,
-  #                                                 todays_tempo_dict,
-  #                                                 todays_notation_dict),
-  #                                                 name=index),
-  #                               ignore_index=False))
-
-  # todays_df["Interpretation"] = "Time, Tempo, Note_Value"
-
   return todays_multi_index_series
+
+
+def update_dictionary(dictionary: dict,
+                      key: str,
+                      value: str,
+                      by_concat: bool = True,
+                      handle_error: bool = True,
+                      keep_duplicates: bool = False):
+  """
+  Updates dictionary.
+  
+  if key absent updates the values
+  
+  If key already present, attempts to concat values, but if it fails it
+  replaces the old value.
+  
+  keep_duplicates only used if by_concat is set to True
+  
+  :param dictionary: dict
+  :param key: str
+  :param value: str
+  :param by: bool
+  :param handle_error: bool
+  :param keep_duplicates: bool
+  :return:
+  """
+  assert isinstance(dictionary, dict), f"Dict data type expected, got " \
+                                       f"{type(dictionary)}"
+  try:
+    
+    if by_concat:
+      
+      # check if not first entry
+      if key in dictionary.keys():
+ 
+        if not keep_duplicates:
+          # avoid duplication of values
+          if value in dictionary[key]:
+            pass
+          
+          else:
+            print("first else")
+            dictionary[key] += value
+        
+        else:
+          print("second else")
+          # ignore duplication if any
+          dictionary[key] += value
+      
+      # if first entry
+      if key not in dictionary.keys():
+        dictionary[key] = value
+  
+  except:
+    
+    print("Concatenation of dictionary failed. Replacing old value")
+    
+    # replace original value
+    if handle_error:
+      dictionary[key] = value
+  
+  if not by_concat:
+    # replace
+    dictionary[key] = value
+  
+  return dictionary
+  

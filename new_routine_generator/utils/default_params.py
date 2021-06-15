@@ -14,8 +14,7 @@ cloud_path = "P:\\guitar_practice_tracker\\"
 
 main_file_name = "guitar_practice_tracker.xlsx"
 record_log = "record_log.txt"
-#today = main_file_name + "_" + today_date + "_" + today_time + \
-                   #".xlsx"
+
 
 def dict_total(data_dict: dict):
   """
@@ -242,19 +241,22 @@ practice_lesson_header_message = f"""\n
 
     """
 
-note_duration = ("\nNote duration for each beat? "
-                 "\nOptions:"
-                 "\n-------"
-                 "\nNo Notes             0/0    (0)"
-                 "\nDouble               8/1    (1)"
-                 "\nWhole                4/1    (2)"
-                 "\nHalf                 4/2    (3)"
-                 "\nQuarter              4/4    (4)"
-                 "\nEighth               4/8    (5)"
-                 "\nSixteenth            4/16   (6)"
-                 "\nThirtySecondth       4/32   (7)"
-                 "\nSixtyFourth          4/64   (8)",
-                 "\nOne-twenty-Eighth    4/128  (8)",)
+note_duration = ("""
+  Note duration for each beat?
+  
+  Options:
+  -------
+  No Notes             0/0    (0)
+  Double               8/1    (1)
+  Whole                4/1    (2)
+  Half                 4/2    (3)
+  Quarter              4/4    (4)
+  Eighth               4/8    (5)
+  Sixteenth            4/16   (6)
+  ThirtySecondth       4/32   (7)
+  SixtyFourth          4/64   (8)
+  One-twenty-Eighth    4/128  (9)
+""")
 
 note_duration_dict = {
     0: "X",     # Unused

@@ -1,5 +1,7 @@
 import time
 from gtts import gTTS
+import os
+
 
 def get_hours_minutes_seconds(time_in_seconds: int):
   """
@@ -22,10 +24,11 @@ def countdown(time_in_minutes: int, topic_header: str):
   seconds = 60
   timer = abs(int(float(time_in_minutes*seconds)))
   if timer == 0:
-    return print("Custom duration chosen is too short. This lesson is being skipped.")
+    print("Custom duration chosen is too short. This lesson is being skipped.")
+    return False
 
   countdown_timer_message = (
-  f"\nCountdown Timer for '{topic_header}': Practice non-stop till zero"
+    f"\nCountdown Timer for '{topic_header}': Practice non-stop till zero"
   )
   # print timer message plus underline
   print(countdown_timer_message)
@@ -40,6 +43,7 @@ def countdown(time_in_minutes: int, topic_header: str):
     # print(time_to_display + "\r", end="")
     time.sleep(1)
     timer -= 1
+  return True
 
 
 def to_speech(voice_this: str):
